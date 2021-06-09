@@ -1,0 +1,11 @@
+Requerimientos Sistema Bancario en C.pdf
+SistemaBancario.depend
+SistemaBancario.layout
+bin/
+clientes.dat
+cuentas.dat
+main.exe
+main.o
+movimientos.dat
+obj/
+
