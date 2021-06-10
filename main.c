@@ -138,8 +138,7 @@ void registarMovimiento(char const *IDCuenta, char const *tipoDeMovimiento, floa
         fprintf(stderr, "\n>> Error al abrir el archivo\n");
         exit(1);
     }
-    fwrite(&nuevoMovimiento, sizeof(Movimiento), 1, archivo);
-    if(fwrite != 0)
+    if(fwrite(&nuevoMovimiento, sizeof(Movimiento), 1, archivo))
         printf("\n>> Movimiento almacenados correctamente\n");
     else
         printf("\n>> Error al guardar movimiento\n");
@@ -230,8 +229,7 @@ int main(){
                         exit(1);
                     }
                     //Escribiendo estructura en el archivo
-                    fwrite(&nuevoCliente, sizeof(Cliente), 1, archivoClientesRegistro);
-                    if(fwrite != 0)
+                    if(fwrite(&nuevoCliente, sizeof(Cliente), 1, archivoClientesRegistro))
                         printf("\n>> Datos almacenados correctamente\n");
                     else
                         printf("\n>> Error al guardar datos\n");
@@ -315,8 +313,7 @@ int main(){
                         exit(1);
                     }
                     //Escribiendo estructura en el archivo
-                    fwrite(&nuevaCuenta, sizeof(Cuenta), 1, archivoCuentasRegistro);
-                    if(fwrite != 0)
+                    if(fwrite(&nuevaCuenta, sizeof(Cuenta), 1, archivoCuentasRegistro))
                         printf("\n>> Datos almacenados correctamente\n");
                     else
                         printf("\n>> Error al guardar datos\n");
@@ -369,11 +366,11 @@ int main(){
                 "\n1.Depósito\n2.Retiro\n3.Regresar al menú principal\n"
                 "\nSu opción: ");
             int opcionElegidaSubmenu;
-            scanf("%d", &opcionElegidaMenu);
+            scanf("%d", &opcionElegidaSubmenu);
 
             limpiarPantalla();
 
-            switch(opcionElegidaMenu){
+            switch(opcionElegidaSubmenu){
                 case 1:{
                     printf("|-DEPÓSITO-|\n\n");
                     printf("Introduzca el número de la cuenta a la que desea depositar: ");
@@ -408,7 +405,7 @@ int main(){
                             if(confirmarTransaccion == 's'){
                                 cuentaRegistrada.Saldo += montoADepositar;
                                 registarMovimiento(numeroDeCuentaDeposito, "Depósito", montoADepositar);
-                                fseek(archivoCuentasDeposito, -sizeof(Cuenta), SEEK_CUR);
+                                fseeko64(archivoCuentasDeposito, -sizeof(Cuenta), SEEK_CUR);
                                 fwrite(&cuentaRegistrada, sizeof(Cuenta), 1, archivoCuentasDeposito);
                                 printf("\n>> Depositados %.2f al número de cuenta %s\n", montoADepositar, numeroDeCuentaDeposito);
                                 break;
@@ -468,7 +465,7 @@ int main(){
                                         printf("\n>> Saldo insuficiente\n");
                                         break;
                                     }
-                                    fseek(archivoCuentasRetiro, -sizeof(Cuenta), SEEK_CUR);
+                                    fseeko64(archivoCuentasRetiro, -sizeof(Cuenta), SEEK_CUR);
                                     fwrite(&cuentaRegistradaRetiro, sizeof(Cuenta), 1, archivoCuentasRetiro);
                                     printf("\n>> Retirados %.2f del número de cuenta %s\n", montoARetirar, numeroDeCuentaRetiro);
                                     break;
@@ -541,7 +538,7 @@ int main(){
                                 printf("\n>> Límite de crédito excedido\n");
                                 break;
                             }
-                            fseek(archivoCuentasPagos, -sizeof(Cuenta), SEEK_CUR);
+                            fseeko64(archivoCuentasPagos, -sizeof(Cuenta), SEEK_CUR);
                             fwrite(&cuentaRegistradaPagos, sizeof(Cuenta), 1, archivoCuentasPagos);
                             printf("\n>> Pagados %.2f con el número de cuenta %s\n", montoAPagar, numeroDeCuentaPagos);
                             break;
@@ -619,7 +616,7 @@ int main(){
                                 printf("\n>> Saldo insuficiente\n");
                                 break;
                             }
-                            fseek(archivoCuentasTransferenciaOrigen, -sizeof(Cuenta), SEEK_CUR);
+                            fseeko64(archivoCuentasTransferenciaOrigen, -sizeof(Cuenta), SEEK_CUR);
                             fwrite(&cuentaRegistradaOrigen, sizeof(Cuenta), 1, archivoCuentasTransferenciaOrigen);
                             printf("\n>> Retirados %.2f del número de cuenta %s\n", montoATransferir, numeroDeCuentaTransferenciaOrigen);
                             break;
@@ -651,7 +648,7 @@ int main(){
             while(fread(&cuentaRegistradaDestino, sizeof(Cuenta), 1, archivoCuentasTransferenciaDestino)){
                 if(strcmp(numeroDeCuentaTransferenciaDestino, cuentaRegistradaDestino.IDCuenta) == 0){
                     cuentaRegistradaDestino.Saldo += montoATransferir;
-                    fseek(archivoCuentasTransferenciaDestino, -sizeof(Cuenta), SEEK_CUR);
+                    fseeko64(archivoCuentasTransferenciaDestino, -sizeof(Cuenta), SEEK_CUR);
                     fwrite(&cuentaRegistradaDestino, sizeof(Cuenta), 1, archivoCuentasTransferenciaDestino);
                     printf("\n>> Transferidos %.2f al número de cuenta %s\n", montoATransferir, numeroDeCuentaTransferenciaDestino);
                     break;
