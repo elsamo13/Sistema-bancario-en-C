@@ -8,29 +8,9 @@
   #include<windows.h>
 #endif
 
-typedef struct{
-    char IDCliente[20];
-    char nombre[20];
-    char ciudad[20];
-    char direccion[20];
-    char edad[20];
-    char telefono[20];
-} Cliente;
-
-typedef struct{
-    char IDCuenta[20];
-    char IDCliente[20];
-    char NIP[5];
-    char NTipoCuenta;
-    float Saldo;
-} Cuenta;
-
-typedef struct{
-    char IDCuenta[20];
-    char tipoDeMovimiento[20];
-    float monto;
-    time_t fecha;
-} Movimiento;
+#include "clientes.h"
+#include "cuentas.h"
+#include "movimientos.h"
 
 void limpiarPantalla(){
   #ifdef _WIN32
@@ -55,119 +35,6 @@ bool volverAlMenuPrincipal(){
     if(volverAlMenuPrincipal1 == 's')
         return true;
     else return false;
-}
-
-bool validarCliente(char const *nombreDelCliente){
-    bool clienteExiste;
-    FILE *archivo;
-    Cliente clienteRegistrado;
-    archivo = fopen ("clientes.dat", "rb");
-    if (archivo == NULL){
-        fprintf(stderr, "\n>> Error al abrir el archivo\n");
-        exit(1);
-    }
-    while(fread(&clienteRegistrado, sizeof(Cliente), 1, archivo)){
-        if(strcmp(nombreDelCliente, clienteRegistrado.nombre) == 0){
-            clienteExiste = true;
-            break;
-        }
-    }
-    fclose(archivo);
-
-    if(clienteExiste == true) printf("\n>> Cliente encontrado\n");
-    else printf("\n>> Cliente no encontrado\n");
-    return clienteExiste;
-}
-
-bool validarCuenta(char const *numeroDeCuenta){
-    bool cuentaExiste;
-    FILE *archivo;
-    Cuenta cuentaRegistrada;
-    archivo = fopen ("cuentas.dat", "rb");
-    if (archivo == NULL){
-        fprintf(stderr, "\n>> Error al abrir el archivo\n");
-        exit(1);
-    }
-    while(fread(&cuentaRegistrada, sizeof(Cuenta), 1, archivo)){
-        if(strcmp(numeroDeCuenta, cuentaRegistrada.IDCuenta) == 0){
-            cuentaExiste = true;
-            break;
-        }
-    }
-    fclose(archivo);
-
-    if(cuentaExiste) printf("\n>> Cuenta encontrada\n");
-    else printf("\n>> Cuenta no encontrada\n");
-    return cuentaExiste;
-}
-
-/*bool validarCuentaMovimiento(char const *numeroDeCuenta){
-    bool cuentaExiste;
-    FILE *archivo;
-    Movimiento cuentaRegistrada;
-    archivo = fopen ("movimientos.dat", "rb");
-    if (archivo == NULL){
-        fprintf(stderr, "\n>> Error al abrir el archivo\n");
-        exit(1);
-    }
-    while(fread(&cuentaRegistrada, sizeof(Movimiento), 1, archivo)){
-        if(strcmp(numeroDeCuenta, cuentaRegistrada.IDCuenta) == 0){
-            cuentaExiste = true;
-            break;
-        }
-    }
-    fclose(archivo);
-
-    if(cuentaExiste) printf("\n>> Cuenta movimientos encontrada\n");
-    else printf("\n>> Cuenta movimientos no encontrada\n");
-    return cuentaExiste;
-}*/
-
-void registarMovimiento(char const *IDCuenta, char const *tipoDeMovimiento, float monto){
-    time_t fechaAhora;
-    time(&fechaAhora);
-
-    Movimiento nuevoMovimiento;
-    strcpy(nuevoMovimiento.IDCuenta, IDCuenta);
-    strcpy(nuevoMovimiento.tipoDeMovimiento, tipoDeMovimiento);
-    nuevoMovimiento.monto = monto;
-    nuevoMovimiento.fecha = fechaAhora;
-
-    FILE *archivo = fopen ("movimientos.dat", "ab");
-    if (archivo == NULL){
-        fprintf(stderr, "\n>> Error al abrir el archivo\n");
-        exit(1);
-    }
-    if(fwrite(&nuevoMovimiento, sizeof(Movimiento), 1, archivo))
-        printf("\n>> Movimiento almacenados correctamente\n");
-    else
-        printf("\n>> Error al guardar movimiento\n");
-    fclose (archivo);
-}
-
-void consultarMovimiento(char const *numeroDeCuenta){
-    /*validarCuentaMovimiento(numeroDeCuenta);*/
-
-    //Abriendo archivo para lectura
-    FILE *archivo = fopen ("movimientos.dat", "rb");
-    if (archivo == NULL){
-        fprintf(stderr, "\n>> Error al abrir el archivo\n");
-        exit(1);
-    }
-    //Leyendo el contenido del archivo hasta su final
-    Movimiento movimientoRegistrado;
-    while(fread(&movimientoRegistrado, sizeof(Movimiento), 1, archivo)){
-        if(strcmp(numeroDeCuenta, movimientoRegistrado.IDCuenta) == 0){
-            printf("\n\nNúmero de cuenta: %s\n"
-                "Tipo de movimiento: %s\n"
-                "Monto: %.2f\n"
-                "Fecha: %s\n"
-                "----------------------------------------",
-                movimientoRegistrado.IDCuenta, movimientoRegistrado.tipoDeMovimiento, movimientoRegistrado.monto, ctime(&movimientoRegistrado.fecha));
-        }
-    }
-    //Cerrando el archivo
-    fclose(archivo);
 }
 
 int main(){
