@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <time.h>
+#include <string.h>
 // Establecer el idioma a español
 #include <locale.h>
 // Para limpiar consola
@@ -8,9 +9,11 @@
   #include<windows.h>
 #endif
 
+
 #include "clientes.h"
 #include "cuentas.h"
 #include "movimientos.h"
+
 
 void limpiarPantalla(){
   #ifdef _WIN32
